@@ -9,17 +9,15 @@ struct MelioImpl {
     using TestInfo = std::tuple<int, std::string>;
 
     auto enable_stop_on_error() -> void;
-    auto push(MelioratePrivate::TestFunctor test) -> void;
+    auto push(Meliorate::Private::MetaFunctor test) -> void;
 
-    // auto on_test_fail(int line, std::string message) -> void;
-
-    auto pre_execution(MelioratePrivate::TestFunctor const& t) -> void;
-    auto post_execution(MelioratePrivate::TestFunctor const& t) -> void;
+    auto pre_execution(Meliorate::Private::MetaFunctor const& t) -> void;
+    auto post_execution(Meliorate::Private::MetaFunctor const& t) -> void;
 
     auto finished() -> void;
     auto run() -> int;
 
-    std::queue<MelioratePrivate::TestFunctor> queue;
+    std::queue<Meliorate::Private::MetaFunctor> queue;
 
     bool stop_on_error = false;
     bool all_tests_passed = true;
@@ -36,7 +34,7 @@ auto MelioImpl::enable_stop_on_error() -> void {
 
 //////////////////////////////////////////////////////////////////////////////
 
-auto MelioImpl::push(MelioratePrivate::TestFunctor test) -> void {
+auto MelioImpl::push(Meliorate::Private::MetaFunctor test) -> void {
     queue.push(std::move(test));
 }
 
@@ -50,13 +48,13 @@ auto MelioImpl::push(MelioratePrivate::TestFunctor test) -> void {
 
 //////////////////////////////////////////////////////////////////////////////
 
-auto MelioImpl::pre_execution(MelioratePrivate::TestFunctor const& t) -> void {
+auto MelioImpl::pre_execution(Meliorate::Private::MetaFunctor const& t) -> void {
     printf("[RUN     ] %s\n", t.id.c_str());
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-auto MelioImpl::post_execution(MelioratePrivate::TestFunctor const& t) -> void
+auto MelioImpl::post_execution(Meliorate::Private::MetaFunctor const& t) -> void
 {
     if (current_test_passed) {
         printf("[    PASS]\n");
@@ -151,19 +149,15 @@ auto Melio::enable_stop_on_error() -> void {
     pimpl->enable_stop_on_error();
 }
 
-auto Melio::push(MelioratePrivate::TestFunctor test) -> void {
+auto Melio::push(Meliorate::Private::MetaFunctor test) -> void {
     pimpl->push(test);
 }
 
-// auto Melio::on_test_fail(int line, std::string message) -> void {
-//     pimpl->on_test_fail(line, message);
-// }
-
-auto Melio::pre_execution(MelioratePrivate::TestFunctor const& t) -> void {
+auto Melio::pre_execution(Meliorate::Private::MetaFunctor const& t) -> void {
     pimpl->pre_execution(t);
 }
 
-auto Melio::post_execution(MelioratePrivate::TestFunctor const& t) -> void {
+auto Melio::post_execution(Meliorate::Private::MetaFunctor const& t) -> void {
     pimpl->post_execution(t);
 }
 

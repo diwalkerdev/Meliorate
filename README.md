@@ -16,7 +16,7 @@ TEST("this is a simple self-registering test", []() {
 The test runner is executed with:
 ```
 auto main() -> int {
-    return Meliorate()->run();
+    return meliorate_run();
 }
 ```
 

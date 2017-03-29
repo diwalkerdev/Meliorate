@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <queue>
-#include "TestFunctor.h"
+#include "MetaFunctor.h"
 
 struct MelioImpl;
 
@@ -17,12 +17,10 @@ struct Melio {
     Melio(Melio && other)=delete;
 
     auto enable_stop_on_error() -> void;
-    auto push(MelioratePrivate::TestFunctor test) -> void;
+    auto push(Meliorate::Private::MetaFunctor test) -> void;
 
-    // auto on_test_fail(int line, std::string message) -> void;
-
-    auto pre_execution(MelioratePrivate::TestFunctor const& t) -> void;
-    auto post_execution(MelioratePrivate::TestFunctor const& t) -> void;
+    auto pre_execution(Meliorate::Private::MetaFunctor const& t) -> void;
+    auto post_execution(Meliorate::Private::MetaFunctor const& t) -> void;
 
     auto finished() -> void;
     auto run() -> int;

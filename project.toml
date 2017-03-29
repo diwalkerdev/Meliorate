@@ -1,0 +1,8 @@
+[project]
+name = "Meliorate"
+version = [0, 0, 1]
+type = "shared"
+
+[[external]]
+name = 'snowhouse'
+inc_path = '/home/david/Projects/3rdParty/snowhouse'
