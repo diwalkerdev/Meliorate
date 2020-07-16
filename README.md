@@ -5,7 +5,7 @@ It aims to:
  * Simplify the writing and execution of tests.
  * Minimise the amount of strange code (macro magic) often associated with C++ unit test libraries.
 
-Meliorate uses Clang to identify test functions (functions beginning with the word `test`) and generates all code necessary to run test functions automatically.
+Meliorate uses `Clang` to identify test functions (functions beginning with the word `test`) and generates all code necessary to run test functions automatically.
 
 ## Prerequisits
 Requires:
@@ -14,10 +14,10 @@ Requires:
 
 ## Getting started
 Meliorate comes in two parts:
- * `meliorate.h` which includes the `meliorate_run` function for running tests and other using parameters for customising test execution.
+ * `meliorate.h` which includes the `meliorate_run` function for running tests and other useful parameters for customising test execution.
  * `meliorateapp` which is the code generator.
 
-`meliorate.h` can be found in the include directory of the project. Note, Meliorate requires that the include compiler flag (-I) points to the `include` directory and not the `include/meliorate` directory.
+`meliorate.h` should be included into you project by adding a compiler include flag (-I) that points to the `include` directory (and *not* the `include/meliorate` directory).
 
 The `meliorateapp` can be installed from PyPi.
 
@@ -36,7 +36,8 @@ void test_that_something_is_true()
     // code goes here.
 }
 
-// Not extracted as a test function.
+// Not extracted as a test function because the function name
+// does not begin with "test".
 int not_a_test_function()
 {
     return 0;
@@ -53,7 +54,7 @@ void test_that_the_result_is_42()
     // code goes here.
 }
 
-// Not extracted as a test function.
+// Not extracted as a test function because the function is static.
 static void test_that_something_is_false()
 {
     // code goes here.
@@ -80,6 +81,20 @@ meliorateapp <path/to/test/directory>
 Check that `meliorate_gen.cpp` is created in the test directory.
 
 Finally, compile and run you test program as normal, remembering to add `meliorate_gen.cpp` to your build process.
+
+The output will look something like:
+```
+[RUN     ] test_that_something_is_true
+[  PASSED]
+[RUN     ] test_that_error_is_thrown
+Something went wrong.
+[  FAILED]
+[RUN     ] test_that_the_result_is_42
+[  PASSED]
+1 tests FAILED out of 3
+```
+
+You can force test execution to stop when an error occurs by setting `meliorate_stop_on_error` variable to `true` prior to calling the `meliorate_run` function.
 
 
 ## Customising Assertions 
