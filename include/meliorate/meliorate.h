@@ -14,7 +14,7 @@ extern bool meliorate_stop_on_error;
 
 
 template <typename T>
-void handle_exception(T const& exception)
+void meliorate_handle_exception(T const& exception)
 {
     std::cerr << exception.what() << std::endl;
 }
@@ -40,7 +40,7 @@ int meliorate_run()
             was_exception = true;
             ++tests_failed_counter;
 
-            handle_exception(the_exception);
+            meliorate_handle_exception(the_exception);
             printf("[  FAILED]\n");
             
             if (meliorate_stop_on_error) 

@@ -1,6 +1,4 @@
-#include <stdio.h>
 #include "meliorate/meliorate.h"
-
 
 int main()
 {

@@ -2,26 +2,29 @@
 
 void test_that_something_is_true()
 {
-    printf("Hello world\n");
+    // code goes here.
+}
+
+// Not extracted as a test function.
+int not_a_test_function()
+{
+    return 0;
 }
 
 void test_that_error_is_thrown()
 {
-    //throw std::runtime_error("Something went wrong.");
+    throw std::runtime_error("Something went wrong.");
 }
 
 
 void test_that_the_result_is_42()
 {
-    printf("Hello world\n");
+    // code goes here.
 }
 
-
+// Not extracted as a test function.
 static void test_that_something_is_false()
 {
+    // code goes here.
 }
 
-int not_main()
-{
-    return 0;
-}
