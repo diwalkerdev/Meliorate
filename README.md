@@ -1,25 +1,115 @@
 # Meliorate
-Unit test runner for C++.
+Meliorate is a code generator and test runner for C++.
 
-Aims:
-- Minimal, simple, easy to understand. Few or no magics.
-- Do not sacrifice the above for backward compatibility.
+It aims to:
+ * Simplify the writing and execution of tests.
+ * Minimise the amount of strange code (macro magic) often associated with C++ unit test libraries.
 
-## Adding tests
-Tests are self registering.
+Meliorate uses Clang to identify test functions (functions beginning with the word `test`) and generates all code necessary to run test functions automatically.
+
+## Prerequisits
+Requires:
+ * Python3.7+
+ * Clang (dev only)
+
+## Getting started
+Meliorate comes in two parts:
+ * `meliorate.h` which includes the `meliorate_run` function for running tests and other using parameters for customising test execution.
+ * `meliorateapp` which is the code generator.
+
+`meliorate.h` can be found in the include directory of the project. Note, Meliorate requires that the include compiler flag (-I) points to the `include` directory and not the `include/meliorate` directory.
+
+The `meliorateapp` can be installed from PyPi.
+
 ```
-TEST("this is a simple self-registering test", []() {
-});
-
+pip install meliorate
 ```
 
-The test runner is executed with:
+## Using Meliorate
+
+Write some test functions:
 ```
-auto main() -> int {
-    return meliorate_run();
+#include "meliorate/meliorate.h"
+
+void test_that_something_is_true()
+{
+    // code goes here.
+}
+
+// Not extracted as a test function.
+int not_a_test_function()
+{
+    return 0;
+}
+
+void test_that_error_is_thrown()
+{
+    throw std::runtime_error("Something went wrong.");
+}
+
+
+void test_that_the_result_is_42()
+{
+    // code goes here.
+}
+
+// Not extracted as a test function.
+static void test_that_something_is_false()
+{
+    // code goes here.
 }
 ```
 
-## Assertions
-Meliorate does not provide any assertions. You should use
-[snowhouse](https://github.com/banditcpp/snowhouse) assertions instead.
+Add the `meliorate_run` function to `main`:
+```
+#include "meliorate/meliorate.h"
+
+int main()
+{
+    meliorate_stop_on_error = false;
+    return meliorate_run<std::exception>();
+}
+```
+Meliorate assumes your assertion library will use exceptions from the standard library by default (hence why `meliorate_run` is parameterized with `std::exception`). To use a custom assertion library, see the `Customising Assertions` section for more information.
+
+Run the `meliorateapp` on the test directory:
+```
+meliorateapp <path/to/test/directory>
+```
+
+Check that `meliorate_gen.cpp` is created in the test directory.
+
+Finally, compile and run you test program as normal, remembering to add `meliorate_gen.cpp` to your build process.
+
+
+## Customising Assertions 
+Meliorate does not provide any assertions, but by default assumes that the assertion library will use exceptions from the standard library. Should you wish to use another library, such as [snowhouse](https://github.com/banditcpp/snowhouse), follow the instructions below:
+
+Provide a specialisation for the `meliorate_handle_exception` function. This function handles the printing of the exception when an error occurs. By default the function looks like:
+```
+template <typename T>
+void meliorate_handle_exception(T const& exception)
+{
+    std::cerr << exception.what() << std::endl;
+}
+```
+
+Provide the specialisation like so:
+```
+template <typename T>
+void meliorate_handle_exception(snowhouse::AssertionException const& exception)
+{
+    std::cerr << ex.GetMessage() << std::endl;
+}
+```
+
+Then set the template parameter for the `meliorate_run` function:
+```
+#include "meliorate/meliorate.h"
+
+int main()
+{
+    meliorate_stop_on_error = false;
+    return meliorate_run<snowhouse::AssertionException>();
+}
+```
